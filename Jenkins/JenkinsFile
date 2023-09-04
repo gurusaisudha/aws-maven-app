@@ -69,26 +69,28 @@ pipeline {
                 steps {
 
                     dir('manifests')
-                     {
+                {
 
                     sh 'ls -l'
                     // kubectl apply -f <fileName>.yml
                     withCredentials([usernamePassword(credentialsId: 'k8slogin', passwordVariable: 'k8s-pwd', usernameVariable: 'k8s-user')]) {
+                    sh 'docker login -u ${k8suser} -p ${k8spwd}'
                     } apply -f deployment.yml
-                    sh 'docker login -u ${k8suser} -p ${k8spwd}'
+                    
                     withCredentials([usernamePassword(credentialsId: 'k8slogin', passwordVariable: 'k8s-pwd', usernameVariable: 'k8s-user')]) {
+                    sh 'docker login -u ${k8suser} -p ${k8spwd}'
                     } apply -f service.yml
-                    sh 'docker login -u ${k8suser} -p ${k8spwd}'
+                    
                     withCredentials([usernamePassword(credentialsId: 'k8slogin', passwordVariable: 'k8s-pwd', usernameVariable: 'k8s-user')]) {
-                    } rollout restart deployment/java-app-deployment
                     sh 'docker login -u ${k8suser} -p ${k8spwd}'
-                     }
+                    } rollout restart deployment/java-app-deployment
+                    
                     echo "kubernetes deployment is done"
 
                     sh 'kubectl get deployments'
                     sh 'sleep 100 ; kubectl get services'
                     
-                    }
+                }
 
                     }
                 }

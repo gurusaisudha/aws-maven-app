@@ -55,6 +55,51 @@ pipeline {
 
             }
         } 
+         stage ('K8SManiFest-Checkout') {
+                steps {
+
+                    git 'https://github.com/gurusaisudha/aws-k8s-CICD.git'
+
+                }
+            }
+
+        stage ('Kubernetes AutoDeployment') {
+  
+
+                steps {
+
+                    dir('manifests')
+                     {
+
+                    sh 'ls -l'
+                    // kubectl apply -f <fileName>.yml
+                    withCredentials([usernamePassword(credentialsId: 'k8slogin', passwordVariable: 'k8s-pwd', usernameVariable: 'k8s-user')]) {
+                    } apply -f deployment.yml'
+                    sh 'docker login -u ${k8suser} -p ${k8spwd}'
+                    withCredentials([usernamePassword(credentialsId: 'k8slogin', passwordVariable: 'k8s-pwd', usernameVariable: 'k8s-user')]) {
+                    } apply -f service.yml'
+                    sh 'docker login -u ${k8suser} -p ${k8spwd}'
+                    withCredentials([usernamePassword(credentialsId: 'k8slogin', passwordVariable: 'k8s-pwd', usernameVariable: 'k8s-user')]) {
+                    } rollout restart deployment/java-app-deployment'
+                    sh 'docker login -u ${k8suser} -p ${k8spwd}'
+                    echo "kubernetes deployment is done"
+
+                    sh 'kubectl get deployments'
+                    sh 'sleep 100 ; kubectl get services'
+                    
+                    }
+
+                    }
+                }
+        stage('Archive and clean workspace') {
+                steps {
+                    
+                    //archive 'target/demo*.jar'
+                    archiveArtifacts artifacts: 'target/*.jar', followSymlinks: false
+                    cleanWs()
+                }
+
+            }              
+
     }
 }
-

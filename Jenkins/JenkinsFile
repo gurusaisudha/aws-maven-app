@@ -82,6 +82,7 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: 'k8slogin', passwordVariable: 'k8s-pwd', usernameVariable: 'k8s-user')]) {
                     } rollout restart deployment/java-app-deployment
                     sh 'docker login -u ${k8suser} -p ${k8spwd}'
+                     }
                     echo "kubernetes deployment is done"
 
                     sh 'kubectl get deployments'

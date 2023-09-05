@@ -78,7 +78,7 @@ pipeline {
                                       {
                                           sh 'login [-u] ${kubernetesuser} [-p] ${kubernetespwd}' 
                                         
-                                        } apply deployment.yml
+                                        } apply -f deployment.yml
                     }
                                       
                    withCredentials([usernamePassword(credentialsId: 'kuberneteslogin', passwordVariable: 'kubernetespwd', usernameVariable: 'kubernetesuser')])

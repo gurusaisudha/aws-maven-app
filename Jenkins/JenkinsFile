@@ -55,62 +55,7 @@ pipeline {
 
             }
         } 
-         stage ('K8SManiFest-Checkout') {
-                steps {
-
-                    git 'https://github.com/gurusaisudha/aws-k8s-CICD.git'
-
-                }
-            }
-
-        stage ('Kubernetes AutoDeployment') {
-  
-
-                steps {
-
-                    dir('manifests')
-                {
-
-                    sh 'ls -l'
-                    // kubectl apply -f <fileName>.yml
-                    kubectl{
-                     withCredentials([usernamePassword(credentialsId: 'kuberneteslogin', passwordVariable: 'kubernetespwd', usernameVariable: 'kubernetesuser')])
-                                      {
-                                          sh 'login [-u] ${kubernetesuser} [-p] ${kubernetespwd}' 
-                                        
-                                        } apply -f deployment.yml
-                    }
-                                      
-                   withCredentials([usernamePassword(credentialsId: 'kuberneteslogin', passwordVariable: 'kubernetespwd', usernameVariable: 'kubernetesuser')])
-                                      {
-                                          sh 'login [-u] ${kubernetesuser} [-p] ${kubernetespwd}' 
-                                          kubectl apply -f service.yml
-                                        } 
-                   
-                    withCredentials([usernamePassword(credentialsId: 'kuberneteslogin', passwordVariable: 'kubernetespwd', usernameVariable: 'kubernetesuser')])
-                                      {
-                                          sh 'login [-u] ${kubernetesuser} [-p] ${kubernetespwd}' 
-                                         kubectl rollout restart deployment/java-app-deployment
-                                        } 
-                    
-                    echo "kubernetes deployment is done"
-
-                    sh 'kubectl get deployments'
-                    sh 'sleep 100 ; kubectl get services'
-                    
-                }
-
-                    }
-                }
-        stage('Archive and clean workspace') {
-                steps {
-                    
-                    //archive 'target/demo*.jar'
-                    archiveArtifacts artifacts: 'target/*.jar', followSymlinks: false
-                    cleanWs()
-                }
-
-            }              
+              
 
     }
 }

@@ -73,12 +73,13 @@ pipeline {
 
                     sh 'ls -l'
                     // kubectl apply -f <fileName>.yml
-                    kubectl
+                    kubectl{
                      withCredentials([usernamePassword(credentialsId: 'kuberneteslogin', passwordVariable: 'kubernetespwd', usernameVariable: 'kubernetesuser')])
                                       {
                                           sh 'login [-u] ${kubernetesuser} [-p] ${kubernetespwd}' 
                                         
                                         } apply deployment.yml
+                    }
                                       
                    withCredentials([usernamePassword(credentialsId: 'kuberneteslogin', passwordVariable: 'kubernetespwd', usernameVariable: 'kubernetesuser')])
                                       {

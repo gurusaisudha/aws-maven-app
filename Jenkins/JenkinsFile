@@ -73,17 +73,21 @@ pipeline {
 
                     sh 'ls -l'
                     // kubectl apply -f <fileName>.yml
-                    withCredentials([usernamePassword(credentialsId: 'k8slogin', passwordVariable: 'k8s-pwd', usernameVariable: 'k8s-user')]) {
-                    sh 'docker login -u ${k8suser} -p ${k8spwd}'
-                    } apply -f deployment.yml
-                    
-                    withCredentials([usernamePassword(credentialsId: 'k8slogin', passwordVariable: 'k8s-pwd', usernameVariable: 'k8s-user')]) {
-                    sh 'docker login -u ${k8suser} -p ${k8spwd}'
-                    } apply -f service.yml
-                    
-                    withCredentials([usernamePassword(credentialsId: 'k8slogin', passwordVariable: 'k8s-pwd', usernameVariable: 'k8s-user')]) {
-                    sh 'docker login -u ${k8suser} -p ${k8spwd}'
-                    } rollout restart deployment/java-app-deployment
+                    kubectl apply -f deployment.yml
+                     withCredentials([usernamePassword(credentialsId: 'kuberneteslogin', passwordVariable: 'kubernetespwd', usernameVariable: 'kubernetesuser')])
+                                      {
+                                          sh 'login [-u] ${kubernetesuser} [-p] ${kubernetespwd}' 
+                                        } 
+                    kubectl apply -f service.yml                    
+                   withCredentials([usernamePassword(credentialsId: 'kuberneteslogin', passwordVariable: 'kubernetespwd', usernameVariable: 'kubernetesuser')])
+                                      {
+                                          sh 'login [-u] ${kubernetesuser} [-p] ${kubernetespwd}' 
+                                        } 
+                    kubectl rollout restart deployment/java-app-deployment
+                    withCredentials([usernamePassword(credentialsId: 'kuberneteslogin', passwordVariable: 'kubernetespwd', usernameVariable: 'kubernetesuser')])
+                                      {
+                                          sh 'login [-u] ${kubernetesuser} [-p] ${kubernetespwd}' 
+                                        } 
                     
                     echo "kubernetes deployment is done"
 

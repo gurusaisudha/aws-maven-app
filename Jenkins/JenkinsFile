@@ -77,19 +77,19 @@ pipeline {
                      withCredentials([usernamePassword(credentialsId: 'kuberneteslogin', passwordVariable: 'kubernetespwd', usernameVariable: 'kubernetesuser')])
                                       {
                                           sh 'login [-u] ${kubernetesuser} [-p] ${kubernetespwd}' 
-                                          'kubectl apply -f deployment.yml'
+                                          kubectl apply -f deployment.yml
                                         } 
                                       
                    withCredentials([usernamePassword(credentialsId: 'kuberneteslogin', passwordVariable: 'kubernetespwd', usernameVariable: 'kubernetesuser')])
                                       {
                                           sh 'login [-u] ${kubernetesuser} [-p] ${kubernetespwd}' 
-                                          'kubectl apply -f service.yml' 
+                                          kubectl apply -f service.yml
                                         } 
                    
                     withCredentials([usernamePassword(credentialsId: 'kuberneteslogin', passwordVariable: 'kubernetespwd', usernameVariable: 'kubernetesuser')])
                                       {
                                           sh 'login [-u] ${kubernetesuser} [-p] ${kubernetespwd}' 
-                                         'kubectl rollout restart deployment/java-app-deployment'
+                                         kubectl rollout restart deployment/java-app-deployment
                                         } 
                     
                     echo "kubernetes deployment is done"
